@@ -62,28 +62,35 @@ function printMessage() {
     body: JSON.stringify({ email, password, captchaInput, captchaResult }),
   })
     .then((response) => {
-      if (response.ok) {
-        // Check if response is a redirection
-        if (response.redirected) {
-          window.location.href = response.url;
-        } else {
-          throw new Error("Server response is not JSON");
-        }
-      } else {
-        throw new Error("Server response is not JSON");
+      if (!response.ok) {
+        throw new Error("Server response is not OK");
       }
+      return response.json(); // Ensure the response is JSON
+    })
+    .then((data) => {
+      console.log("Login successful");
+      alert(data.message);
+      window.location.href = "./public/home.html"; // Redirect to home page
     })
     .catch((error) => {
       console.error("Error:", error);
+      alert("Failed to login. Please try again later.");
     });
 }
 
 // Function to handle refresh of CAPTCHA
 function refreshCaptcha() {
   renderCaptcha();
+  document.getElementById("email").value = "";
+  document.getElementById("password").value = "";
+  document.getElementById("captchaInput").value = "";
 }
 
-// Render CAPTCHA on page load
-window.onload = function () {
+// Function to handle window.onload event
+function handleWindowLoad() {
+  console.log("Window loaded");
   renderCaptcha();
-};
+}
+
+// Attach the handleWindowLoad function to window.onload event
+window.onload = handleWindowLoad;

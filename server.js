@@ -8,7 +8,7 @@ const port = 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static('public'));
+app.use(express.static("public"));
 
 // MongoDB connection configuration
 const mongoURI = "mongodb://localhost:27017"; // Change this to your MongoDB URI
@@ -58,7 +58,7 @@ app.post("/login", async (req, res) => {
       .json({ message: "Email and password are required." });
   }
 
-  // Verify CAPTCHA response
+  // Verify CAPTCHA result
   if (parseInt(captchaInput) !== parseInt(captchaResult)) {
     console.log("CAPTCHA verification failed."); // Debugging log
     return res.status(401).json({ message: "CAPTCHA verification failed." });
@@ -71,7 +71,7 @@ app.post("/login", async (req, res) => {
     if (user) {
       console.log("Login successful."); // Debugging log
       // Login successful, redirect to home.html
-      res.redirect("/home.html");
+      res.json({ message: "Login successful." });
     } else {
       console.log("Login failed. Incorrect email or password."); // Debugging log
       // Login failed
