@@ -8,13 +8,12 @@ const port = 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static('public'));
 
 // MongoDB connection configuration
 const mongoURI = "mongodb://localhost:27017"; // Change this to your MongoDB URI
 const dbName = "querit"; // Change this to your database name
-const client = new MongoClient(mongoURI, {
-  // Omit useNewUrlParser and useUnifiedTopology options
-});
+const client = new MongoClient(mongoURI);
 
 async function connectToMongoDB() {
   try {
@@ -46,21 +45,43 @@ app.get("/", (req, res) => {
   res.send("Server is running.");
 });
 
-// Route handler for login
 app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, captchaInput, captchaResult } = req.body;
 
-  // Fetch user from the database
-  const user = await getUserFromDatabase(email, password);
+  console.log(`Received login request for email: ${email}`); // Debugging log
 
-  if (user) {
-    // Login successful
-    res.json({ message: "Login successful" });
-  } else {
-    // Login failed
-    res
-      .status(401)
-      .json({ message: "Login failed. Incorrect email or password." });
+  // Simple email and password validation
+  if (!email || !password) {
+    console.log("Missing email or password."); // Debugging log
+    return res
+      .status(400)
+      .json({ message: "Email and password are required." });
+  }
+
+  // Verify CAPTCHA response
+  if (parseInt(captchaInput) !== parseInt(captchaResult)) {
+    console.log("CAPTCHA verification failed."); // Debugging log
+    return res.status(401).json({ message: "CAPTCHA verification failed." });
+  }
+
+  try {
+    // Fetch user from the database
+    const user = await getUserFromDatabase(email, password);
+
+    if (user) {
+      console.log("Login successful."); // Debugging log
+      // Login successful, redirect to home.html
+      res.redirect("/home.html");
+    } else {
+      console.log("Login failed. Incorrect email or password."); // Debugging log
+      // Login failed
+      res
+        .status(401)
+        .json({ message: "Login failed. Incorrect email or password." });
+    }
+  } catch (error) {
+    console.error("Error during login:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 });
 
