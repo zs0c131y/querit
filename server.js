@@ -8,7 +8,7 @@ const port = 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static("public"));
+app.use(express.static('public'));
 
 // MongoDB connection configuration
 const mongoURI = "mongodb://localhost:27017"; // Change this to your MongoDB URI
@@ -27,15 +27,15 @@ async function connectToMongoDB() {
 // Connect to MongoDB
 connectToMongoDB();
 
-// Function to fetch a user from the database
-async function getUserFromDatabase(email, password) {
+// Function to insert a user into the database
+async function insertUserToDatabase(userInfo) {
   try {
     const db = client.db(dbName);
     const collection = db.collection("users");
-    const user = await collection.findOne({ email: email, pass: password });
-    return user;
+    await collection.insertOne(userInfo);
+    console.log("User inserted into database successfully.");
   } catch (err) {
-    console.error("Error fetching user:", err);
+    console.error("Error inserting user:", err);
     throw err;
   }
 }
@@ -45,6 +45,33 @@ app.get("/", (req, res) => {
   res.send("Server is running.");
 });
 
+// Route handler for user registration
+app.post("/register", async (req, res) => {
+  const { name, email, password, phone, dob } = req.body;
+
+  console.log(`Received registration request for email: ${email}`); // Debugging log
+
+  // Simple validation for required fields
+  if (!name || !email || !password || !phone || !dob) {
+    console.log("Missing required fields."); // Debugging log
+    return res
+      .status(400)
+      .json({ message: "All fields (name, email, password, phone, dob) are required." });
+  }
+
+  try {
+    // Insert user into the database
+    await insertUserToDatabase({ name, email, password, phone, dob });
+
+    console.log("User registration successful."); // Debugging log
+    res.status(200).json({ message: "User registration successful." });
+  } catch (error) {
+    console.error("Error during registration:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+// Route handler for user login
 app.post("/login", async (req, res) => {
   const { email, password, captchaInput, captchaResult } = req.body;
 
@@ -58,7 +85,7 @@ app.post("/login", async (req, res) => {
       .json({ message: "Email and password are required." });
   }
 
-  // Verify CAPTCHA result
+  // Verify CAPTCHA response
   if (parseInt(captchaInput) !== parseInt(captchaResult)) {
     console.log("CAPTCHA verification failed."); // Debugging log
     return res.status(401).json({ message: "CAPTCHA verification failed." });
@@ -66,12 +93,14 @@ app.post("/login", async (req, res) => {
 
   try {
     // Fetch user from the database
-    const user = await getUserFromDatabase(email, password);
+    const db = client.db(dbName);
+    const collection = db.collection("users");
+    const user = await collection.findOne({ email: email, password: password });
 
     if (user) {
       console.log("Login successful."); // Debugging log
       // Login successful, redirect to home.html
-      res.json({ message: "Login successful." });
+      res.redirect("/home.html");
     } else {
       console.log("Login failed. Incorrect email or password."); // Debugging log
       // Login failed
