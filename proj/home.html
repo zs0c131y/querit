@@ -140,9 +140,20 @@
         function logout() {
           // clear the isLoggedIn flag
           localStorage.removeItem("isLoggedIn");
+          // prevent going back
+          window.history.forward();
           // redirect to the login page
           window.location.href = "login.html";
         }
+
+        // Prevent back button after logout
+        function preventBack() {
+          window.history.forward();
+        }
+        setTimeout("preventBack()", 0);
+        window.onunload = function () {
+          null;
+        };
       </script>
     </div>
   </body>
