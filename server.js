@@ -122,6 +122,10 @@ app.get("/logout", (req, res) => {
   res.redirect("/login.html"); // Redirect to the login page
 });
 
+// Serve static files
+const projDir = path.join(__dirname, './proj');
+app.use(express.static(projDir));
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
