@@ -23,11 +23,17 @@ function updateProfile() {
     .then((response) => response.json())
     .then((data) => {
       console.log("Profile Updated!", data);
-      // Handle response as needed
+      // Redirect to profile
+      window.location.href = "/profile.html";
     })
     .catch((error) => {
       console.error("Error updating profile:", error);
     });
+}
+
+function onCancel() {
+  // Redirect to profile page without making a server request
+  window.location.href = "/profile.html";
 }
 
 function onHover(x, src) {

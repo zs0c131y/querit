@@ -21,3 +21,5 @@ More information will be added as we develop the application in the times to com
 
 ### Contributors
 [![Contributors](https://contrib.rocks/image?repo=pointAcross/querit)](https://github.com/pointAcross/querit/graphs/contributors)
+
+This is a private, testing repository. To visit the actual repository, click [here](https://github.com/pointAcross/querit).

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Page</title>
+    <link rel="stylesheet" href="design.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.quilljs.com/1.3.6/quill.snow.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="left-side">
+        <div>
+          <div class="search-box">
+            <input type="text" id="search" name="search" placeholder="Search" />
+            <button type="submit">Search</button>
+          </div>
+          <div id="headings">
+            <h1>Topics</h1>
+          </div>
+          <div class="box">
+            <p id="box-text-l">Academics</p>
+            <p id="box-text-r">Open</p>
+          </div>
+          <div class="box">
+            <p id="box-text-l">Internships</p>
+            <p id="box-text-r">Open</p>
+          </div>
+          <div class="box">
+            <p id="box-text-l">Career</p>
+            <p id="box-text-r">Open</p>
+          </div>
+          <div class="box">
+            <p id="box-text-l">xyz</p>
+            <p id="box-text-r">Open</p>
+          </div>
+        </div>
+        <div class="footer-container">
+          <div>
+            <p>About</p>
+          </div>
+          <div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+          </div>
+          <div class="footer-section">
+            <p>Terms of Service</p>
+            <p>Privacy</p>
+          </div>
+        </div>
+      </div>
+      <div class="right-side">
+        <div class="navigation-bar">
+          <div class="tooltip">
+            <a href="home.html" onclick="showContent('home')">
+              <img
+                src="images/home.png"
+                alt="Home"
+                onmouseover="showTooltip(this, 'Home')"
+                onmouseout="hideTooltip(this)" />
+              <span class="tooltiptext">Home</span>
+            </a>
+          </div>
+          <div class="tooltip">
+            <a href="postS.html" onclick="showContent('posts')">
+              <img
+                src="images/post.png"
+                alt="Posts"
+                onmouseover="showTooltip(this, 'Post')"
+                onmouseout="hideTooltip(this)" />
+              <span class="tooltiptext">Post</span>
+            </a>
+          </div>
+          <div class="tooltip">
+            <a href="thread.html" onclick="showContent('thread')">
+              <img
+                src="images/hashtag.png"
+                alt="thread"
+                onmouseover="showTooltip(this, 'Thread')"
+                onmouseout="hideTooltip(this)" />
+              <span class="tooltiptext">Thread</span>
+            </a>
+          </div>
+          <div class="tooltip">
+            <a href="notifications.html" onclick="showContent('notifications')">
+              <img
+                src="images/noti.png"
+                alt="Notification"
+                onmouseover="showTooltip(this, 'Notification')"
+                onmouseout="hideTooltip(this)" />
+              <span class="tooltiptext">Notification</span>
+            </a>
+          </div>
+          <div class="tooltip">
+            <a href="profile.html" onclick="showContent('Profile')">
+              <img
+                src="images/profile.png"
+                alt="Profile"
+                onmouseover="showTooltip(this, 'Profile')"
+                onmouseout="hideTooltip(this)" />
+              <span class="tooltiptext">Profile</span>
+            </a>
+          </div>
+        </div>
+        <div id="content-home">
+          <a href="home.html"></a>
+        </div>
+        <div id="content-posts">
+          <a href="posts.html"></a>
+        </div>
+        <div id="content-thread">
+          <a href="thread.html"></a>
+        </div>
+        <div id="content-notifications">
+          <a href="notifications.html"></a>
+        </div>
+        <div id="content-profile">
+          <a href="profile.html"></a>
+        </div>
+        <div class="right-inner-bg">
+          <h1 class="post_h">Add a Post</h1>
+          <div class="line">
+            <div class="dropdown">
+              <label for="dropDown"></label>
+              <select class="dropbtn" id="dropbtn" name="dropDown">
+                <option id="opt" value="Academics">Academics</option>
+                <option id="opt" value="Internships">Internships</option>
+                <option id="opt" value="Career">Career</option>
+                <option id="opt" value="xyz">xyz</option>
+              </select>
+            </div>
+            <div class="draft">Draft</div>
+          </div>
+          <div id="inner-bg2">
+            <textarea id="title" rows="1" placeholder="Title"></textarea>
+            <div id="editor">
+              <textarea
+                id="content"
+                rows="15"
+                placeholder="What's on your mind?"></textarea>
+            </div>
+            <div class="line2">
+              <div class="line3">
+                <form id="fileForm" method="post" enctype="multipart/form-data">
+                  <label for="fileInput">
+                    <img
+                      id="attachmentIcon"
+                      src="images/attach-64.png"
+                      alt="Attachment Icon" />
+                    <input
+                      type="file"
+                      id="fileInput"
+                      style="display: none"
+                      onchange="updateFileName()" />
+                    <p id="fileNameDisplay">No file selected</p>
+                  </label>
+                  <button class="post-button" type="button">Post</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const quill = new Quill("#editor", {
+          modules: {
+            toolbar: [
+              [{ header: [1, 2, false] }],
+              ["bold", "italic", "underline"],
+              ["code-block"],
+            ],
+          },
+          placeholder: "Compose an epic...",
+          theme: "snow", // or 'bubble'
+        });
+      });
+
+      function showContent(contentId) {
+        document.getElementById("content-home").style.display = "none";
+        document.getElementById("content-posts").style.display = "none";
+        document.getElementById("content-thread").style.display = "none";
+        document.getElementById("content-notifications").style.display = "none";
+        document.getElementById("content-profile").style.display = "none";
+
+        document.getElementById("content-" + contentId).style.display = "block";
+      }
+
+      function onHover(x, src) {
+        x.src = src;
+      }
+
+      function onMouseOut(x, src) {
+        x.src = src;
+      }
+
+      function showTooltip(element, text) {
+        var tooltip = element.nextElementSibling;
+        tooltip.innerHTML = text;
+        tooltip.style.visibility = "visible";
+        tooltip.style.opacity = 1;
+      }
+
+      function hideTooltip(element) {
+        var tooltip = element.nextElementSibling;
+        tooltip.style.visibility = "hidden";
+        tooltip.style.opacity = 0;
+      }
+
+      async function postContent() {
+        try {
+          const postTitle = document.querySelector("textarea#title").value;
+          const quillContent = document.querySelector(".ql-editor").innerHTML; // Get content from Quill editor
+          const topic = document.querySelector("select#dropbtn").value;
+
+          // Fetch user name from the server
+          const userNameResponse = await fetch("/getUserName");
+          const userNameData = await userNameResponse.json();
+          const userName = userNameData.name;
+
+          // Decode user email from cookie
+          const userEmail = decodeURIComponent(getCookie("userEmail"));
+
+          // Get current timestamp
+          const timestamp = new Date().toISOString();
+
+          // Check if a file is selected
+          const fileInput = document.getElementById("fileInput");
+          let fileSelected = false;
+          let filePath = "";
+          if (fileInput.files.length > 0) {
+            fileSelected = true;
+            const formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+
+            // Upload the file
+            const fileUploadResponse = await fetch("/uploadFile", {
+              method: "POST",
+              body: formData,
+            });
+
+            // Extract file path from server response
+            const fileUploadData = await fileUploadResponse.json();
+            filePath = fileUploadData.filePath;
+
+            if (!fileUploadResponse.ok) {
+              console.error("Failed to upload file.");
+              return;
+            }
+            console.log("File uploaded successfully:", fileInput.files[0].name);
+          }
+
+          // Construct post data including file path
+          const postData = {
+            postTitle: postTitle,
+            postContent: quillContent, // Use Quill content instead of textarea value
+            topic: topic,
+            timestamp: timestamp,
+            userEmail: userEmail,
+            userName: userName,
+            filePath: filePath, // Include file path in post data
+            // commentCount: 0,
+            // viewCount: 0,
+          };
+
+          // Send post data to server for saving the post
+          const response = await fetch("/savePost", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(postData),
+          });
+
+          if (response.ok) {
+            console.log("Post saved successfully.");
+            window.location.href = "/home.html";
+          } else {
+            console.error("Failed to save post.");
+          }
+        } catch (error) {
+          console.error("Error posting content:", error);
+          alert("Failed to post content. Please try again.");
+        }
+      }
+
+      function getCookie(name) {
+        const cookies = document.cookie.split("; ");
+        for (const cookie of cookies) {
+          const [cookieName, cookieValue] = cookie.split("=");
+          if (cookieName === name) {
+            return cookieValue;
+          }
+        }
+        return "";
+      }
+
+      const postButton = document.querySelector(".post-button");
+      postButton.addEventListener("click", postContent);
+
+      async function logout() {
+        try {
+          console.log("Attempting logout...");
+
+          const response = await fetch("/logout", {
+            method: "POST",
+          });
+
+          if (response.ok) {
+            console.log("Logout request successful.");
+
+            const responseData = await response.json();
+
+            if (responseData.redirectToLogin) {
+              console.log("Redirecting to login page...");
+
+              document.cookie =
+                "connect.sid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+              localStorage.removeItem("isLoggedIn");
+              window.location.href = "/login.html";
+            }
+          } else {
+            console.error("Logout request failed.");
+          }
+        } catch (error) {
+          console.error("Error during logout:", error);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        var tooltips = document.querySelectorAll(".tooltiptext");
+        tooltips.forEach(function (tooltip) {
+          tooltip.style.visibility = "hidden";
+          tooltip.style.opacity = 0;
+        });
+      });
+
+      function preventBack() {
+        window.history.forward();
+      }
+      setTimeout("preventBack()", 0);
+      window.onunload = function () {
+        null;
+      };
+
+      function updateFileName() {
+        const fileInput = document.getElementById("fileInput");
+        const fileNameDisplay = document.getElementById("fileNameDisplay");
+        if (fileInput.files.length > 0) {
+          fileNameDisplay.textContent = fileInput.files[0].name;
+        } else {
+          fileNameDisplay.textContent = "No file selected";
+        }
+      }
+    </script>
+  </body>
+</html>
