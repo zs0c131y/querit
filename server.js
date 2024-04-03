@@ -632,6 +632,52 @@ app.post("/userComments", async (req, res) => {
   }
 });
 
+// Route to handle search requests
+app.get("/search", async (req, res) => {
+  const keywords = req.query.keywords; // Keywords entered by the user
+  try {
+    // Search for posts containing the keywords in title or content
+    const db = client.db(dbName);
+    const collection = db.collection("posts");
+    const posts = await collection
+      .find({
+        $or: [
+          { title: { $regex: keywords, $options: "i" } }, // Case-insensitive search in title
+          { content: { $regex: keywords, $options: "i" } }, // Case-insensitive search in content
+        ],
+      })
+      .toArray();
+    res.json(posts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Route handler for fetching posts by topic
+app.get("/getPostByTopic", async (req, res) => {
+  try {
+    // Extract the topic from the query parameters
+    const topic = req.query.topic;
+
+    // Validate if the topic parameter is provided
+    if (!topic) {
+      return res.status(400).json({ message: "Topic parameter is missing" });
+    }
+
+    // Retrieve posts from the database based on the specified topic
+    const db = client.db(dbName);
+    const collection = db.collection("posts");
+    const posts = await collection.find({ topic: topic }).toArray();
+
+    // Send the retrieved posts back as a JSON response
+    res.json(posts);
+  } catch (error) {
+    console.error("Error fetching posts by topic:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
 // Serve static files
 const projDir = path.join(__dirname, "./proj");
 app.use(express.static(projDir));
