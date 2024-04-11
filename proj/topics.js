@@ -1,31 +1,42 @@
-fetch("http://localhost:3000/getPosts", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    // no data needed
-  }),
-})
-  .then((response) => {
+// Define a function to fetch posts based on the topic from the server
+async function fetchPostsByTopic() {
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const topic = urlParams.get("topic"); // Get the topic from URL query parameters
+    console.log("Fetching posts for topic:", topic);
+    const response = await fetch(
+      `/getPostByTopic?topic=${encodeURIComponent(topic)}`
+    );
     if (!response.ok) {
-      throw new Error("Network response was not ok");
+      throw new Error("Failed to fetch data");
     }
-    return response.json();
-  })
-  .then((data) => {
-    const posts = data.allPosts;
-    console.log("Posts fetched successfully:", posts);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return { error: "Internal server error" };
+  }
+}
 
+// Call the fetchPostsByTopic function and handle the fetched data
+fetchPostsByTopic()
+  .then((data) => {
+    if (data.error) {
+      console.error(data.error);
+      return;
+    }
+    console.log(data); // Handle the fetched data here
+
+    // Assuming you want to display the fetched posts similarly to the previous example
     let postContainer = document.getElementById("post-container");
     postContainer.style.cssText = `
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
-      color: white;
-    `;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        color: white;
+      `;
 
-    posts.forEach((post) => {
+    data.forEach((post) => {
       let container = document.createElement("div");
       container.style.cssText = `
         background-color: rgb(40, 40, 40);

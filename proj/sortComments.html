@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home Page</title>
+    <title>Sorted by Comments</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
@@ -44,7 +44,7 @@
         </div>
         <div class="footer-container">
           <div>
-            <p>About</p>
+            <a href="/about.html"><p>About</p></a>
           </div>
 
           <div>
@@ -152,6 +152,14 @@
       </div>
 
       <script>
+        document
+          .getElementById("searchInput")
+          .addEventListener("keyup", function (event) {
+            if (event.key === "Enter") {
+              handleSearchButtonClick();
+            }
+          });
+
         function showContent(contentId) {
           // Hide all content sections
           document.getElementById("content-home").style.display = "none";
@@ -205,6 +213,41 @@
           } else {
             console.log("Please enter a search term.");
           }
+        });
+
+        function handleSearchButtonClick() {
+          // Get the search input value
+          const keywords = document.getElementById("searchInput").value.trim();
+
+          // Construct the search URL with the keyword
+          const searchUrl = `search.html?keywords=${encodeURIComponent(
+            keywords
+          )}`;
+
+          // Redirect the user to the search URL
+          window.location.href = searchUrl;
+        }
+
+        // Add event listener to the search button
+        document
+          .getElementById("searchIcon")
+          .addEventListener("click", handleSearchButtonClick);
+
+        function handleOpenButtonClick(topic) {
+          // Construct the search URL with the topic
+          const searchUrl = `/topics.html?topic=${encodeURIComponent(topic)}`;
+
+          // Redirect the user to the topics page with the search URL
+          window.location.href = searchUrl;
+        }
+
+        // Add event listeners to all "Open" buttons
+        document.querySelectorAll(".box").forEach((box) => {
+          const topic = box.querySelector("#box-text-l").innerText;
+          const openButton = box.querySelector("#box-text-r");
+          openButton.addEventListener("click", () => {
+            handleOpenButtonClick(topic);
+          });
         });
       </script>
     </div>

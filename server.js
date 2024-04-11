@@ -11,10 +11,12 @@ const multer = require("multer");
 const fs = require("fs");
 const uploadDir = "./uploads";
 const { ObjectId } = require("mongodb");
+const dotenv = require("dotenv");
 
 const app = express();
 const port = 3000;
 const secretKey = crypto.randomBytes(20).toString("hex");
+dotenv.config();
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -22,9 +24,8 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/proj", express.static(path.join(__dirname, "proj")));
 
 // MongoDB connection configuration
-const mongoURI =
-  "mongodb+srv://Adarsh:Adarsh@querit.0c0rqzg.mongodb.net/?retryWrites=true&w=majority&appName=Querit"; // Change this to your MongoDB URI
-const dbName = "querit"; // Change this to your database name
+const mongoURI = process.env.mongoURI;
+const dbName = process.env.dbName; // Change this to your database name
 const client = new MongoClient(mongoURI);
 
 async function connectToMongoDB() {
@@ -613,20 +614,69 @@ app.post("/sortView", async (req, res) => {
   }
 });
 
-// Server-side code
+// Server-side code to fetch user comments
 app.post("/userComments", async (req, res) => {
   const userEmail = req.body.userEmail; // Extract the user email from the request body
   try {
     const db = client.db(dbName);
     const collection = db.collection("posts");
     const userComments = await collection
-      .find({ comments: { $elemMatch: { email: userEmail } } })
-      .project({ "comments.$": 1 }) // Project only the matched comments
+      .aggregate([
+        { $unwind: "$comments" }, // Unwind the comments array
+        { $match: { "comments.email": userEmail } }, // Match comments by user email
+        { $project: { _id: 0, comments: 1 } }, // Project only the comments
+      ])
       .toArray();
     res.status(200).json(userComments);
   } catch (error) {
     console.error("Error fetching user comments:", error);
     res.status(500).json({ message: "Error fetching user comments" });
+  }
+});
+
+// Route to handle search requests
+app.get("/search", async (req, res) => {
+  const keywords = req.query.keywords; // Keywords entered by the user
+  try {
+    // Search for posts containing the keywords in title or content
+    const db = client.db(dbName);
+    const collection = db.collection("posts");
+    const posts = await collection
+      .find({
+        $or: [
+          { title: { $regex: keywords, $options: "i" } }, // Case-insensitive search in title
+          { content: { $regex: keywords, $options: "i" } }, // Case-insensitive search in content
+        ],
+      })
+      .toArray();
+    res.json(posts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Route handler for fetching posts by topic
+app.get("/getPostByTopic", async (req, res) => {
+  try {
+    // Extract the topic from the query parameters
+    const topic = req.query.topic;
+
+    // Validate if the topic parameter is provided
+    if (!topic) {
+      return res.status(400).json({ message: "Topic parameter is missing" });
+    }
+
+    // Retrieve posts from the database based on the specified topic
+    const db = client.db(dbName);
+    const collection = db.collection("posts");
+    const posts = await collection.find({ topic: topic }).toArray();
+
+    // Send the retrieved posts back as a JSON response
+    res.json(posts);
+  } catch (error) {
+    console.error("Error fetching posts by topic:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 });
 
