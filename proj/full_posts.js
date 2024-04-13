@@ -4,7 +4,7 @@ const postID = urlParams.get("postId");
 console.log("Post ID:", postID);
 
 function fetchPostByID(postID) {
-  fetch("/getPostByID", {
+  fetch("http://localhost:3000/getPostByID", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -322,7 +322,7 @@ function fetchPostByID(postID) {
           }
 
           // GET username of user
-          fetch("/getUserName", {
+          fetch("http://localhost:3000/getUserName", {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -339,7 +339,7 @@ function fetchPostByID(postID) {
               const userEmail = data.email;
 
               // Send the comment to the server
-              fetch("/addComment", {
+              fetch("http://localhost:3000/addComment", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -378,7 +378,7 @@ function fetchPostByID(postID) {
         }
 
         // increment view count
-        fetch("/incrementViewCount", {
+        fetch("http://localhost:3000/incrementViewCount", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

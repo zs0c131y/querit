@@ -1,4 +1,4 @@
-fetch("/getPosts", {
+fetch("http://localhost:3000/getPosts", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",

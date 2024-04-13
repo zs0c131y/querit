@@ -1,4 +1,4 @@
-fetch("/sortComment", {
+fetch("http://localhost:3000/sortComment", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
