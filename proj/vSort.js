@@ -1,4 +1,4 @@
-fetch("http://localhost:3000/sortView", {
+fetch("/sortView", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
