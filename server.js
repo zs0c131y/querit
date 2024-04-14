@@ -25,7 +25,7 @@ app.use("/proj", express.static(path.join(__dirname, "proj")));
 
 // MongoDB connection configuration
 const mongoURI = process.env.mongoURI;
-const dbName = process.env.dbName; // Change this to your database name
+const dbName = process.env.dbName;
 const client = new MongoClient(mongoURI);
 
 async function connectToMongoDB() {
@@ -506,6 +506,7 @@ app.post("/uploadFile", upload.single("file"), (req, res) => {
   }
 });
 
+// Route handler to fetch posts by ID
 app.post("/getPostByID", async (req, res) => {
   try {
     const { postID } = req.body;

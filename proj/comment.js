@@ -1,5 +1,5 @@
 // Fetch user name from server
-fetch("/getUserName")
+fetch("http://localhost:3000/getUserName")
   .then((response) => {
     if (!response.ok) {
       throw new Error("Failed to fetch user name");
@@ -13,7 +13,7 @@ fetch("/getUserName")
     console.log("User email:", loggedInUserEmail);
 
     // Fetch comments of the logged-in user
-    fetch("/userComments", {
+    fetch("http://localhost:3000/userComments", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
