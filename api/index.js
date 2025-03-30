@@ -12,6 +12,7 @@ const fs = require("fs");
 const uploadDir = "./uploads";
 const { ObjectId } = require("mongodb");
 const dotenv = require("dotenv");
+const { json } = require('micro'); 
 
 const app = express();
 const port = 3000;
@@ -710,3 +711,5 @@ app.use(express.static(projDir));
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+module.exports = app;
