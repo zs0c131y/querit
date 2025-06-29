@@ -14,7 +14,7 @@ const { ObjectId } = require("mongodb");
 const dotenv = require("dotenv");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = 3000;
 const secretKey = crypto.randomBytes(20).toString("hex");
 dotenv.config();
 
@@ -707,6 +707,6 @@ app.get("/getPostByTopic", async (req, res) => {
 const projDir = path.join(__dirname, "./proj");
 app.use(express.static(projDir));
 
-app.listen(PORT, () => {
-  console.log(`Server running on ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
 });

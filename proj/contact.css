@@ -188,11 +188,11 @@ main {
 }
 
 .ul_center {
-  display: flex; 
-  justify-content: center; 
+  display: flex;
+  justify-content: center;
   align-items: center;
   margin: 1em;
-  padding: 0; 
+  padding: 0;
 }
 
 .navli {
@@ -235,4 +235,17 @@ main {
     rgba(0, 0, 0, 1) 50%,
     rgba(253, 29, 29, 1) 100%
   );
+}
+
+.logo img {
+  height: 70px;
+  width: 70px;
+}
+
+.logo {
+  flex: 7%;
+}
+
+nav {
+  flex: 93%;
 }

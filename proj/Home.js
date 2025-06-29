@@ -1,4 +1,4 @@
-fetch("/getPosts", {
+fetch("./getPosts", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",

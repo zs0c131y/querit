@@ -1,4 +1,4 @@
-fetch("/sortView", {
+fetch("./sortView", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",

@@ -1,4 +1,4 @@
-fetch("/sortComment", {
+fetch("./sortComment", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
